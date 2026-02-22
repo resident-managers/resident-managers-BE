@@ -1,0 +1,99 @@
+#######################
+##########QUERY
+#######################
+extend type Query @guard {
+    "Danh sách dân cư có phân trang và tìm kiếm"
+    residents(
+        where: _ @whereConditions(columnsEnum: "ResidentsWhereColumn")
+        orderBy: _ @orderBy(columnsEnum: "ResidentsOrderByColumn")
+    ): [Resident]
+    @paginate(defaultCount: 10)
+
+    "Chi tiết một dân cư"
+    resident(id: ID! @eq): Resident @find
+}
+#######################
+##########MUTATION
+#######################
+extend type Mutation @guard {
+    "Create a new resident"
+    residentCreate(input: ResidentCreateInput! @spread): Resident
+    "Update resident information"
+    residentUpdate(id: ID!, input: ResidentUpdateInput! @spread): Resident
+    "Delete a resident"
+    residentDelete(id: ID! @whereKey): Resident @delete
+}
+
+#######################
+##########INPUT
+#######################
+input ResidentCreateInput {
+    fullName: String! @rules(apply: ["required", "max:100"]) @rename(attribute: "full_name")
+    gender: GenderEnum!
+    dateOfBirth: Date @rename(attribute: "date_of_birth")
+    phone: String @rules(apply: ["max:15"])
+    nationalId: String @rules(apply: ["unique:residents,national_id", "max:20"]) @rename(attribute: "national_id")
+    address: String
+    occupation: String
+    ethnicity: String
+    religion: String
+    educationLevel: String @rename(attribute: "education_level")
+    note: String
+}
+
+input ResidentUpdateInput {
+    id: ID
+    fullName: String! @rules(apply: ["required", "max:100"]) @rename(attribute: "full_name")
+    gender: GenderEnum!
+    dateOfBirth: Date @rename(attribute: "date_of_birth")
+    phone: String @rules(apply: ["max:15"])
+    nationalId: String @rules(apply: ["unique:residents,national_id", "max:20"]) @rename(attribute: "national_id")
+    address: String
+    occupation: String
+    ethnicity: String
+    religion: String
+    educationLevel: String @rename(attribute: "education_level")
+    note: String
+}
+
+#######################
+##########ENUM
+#######################
+enum ResidentsWhereColumn {
+    FULL_NAME       @enum(value: "full_name")
+    NATIONAL_ID     @enum(value: "national_id")
+    PHONE           @enum(value: "phone")
+    ADDRESS         @enum(value: "address")
+    GENDER          @enum(value: "gender")
+    OCCUPATION      @enum(value: "occupation")
+    ETHNICITY       @enum(value: "ethnicity")
+    RELIGION        @enum(value: "religion")
+    EDUCATION_LEVEL @enum(value: "education_level")
+    DATE_OF_BIRTH   @enum(value: "date_of_birth")
+}
+
+enum ResidentsOrderByColumn {
+    FULL_NAME   @enum(value: "full_name")
+    DATE_OF_BIRTH @enum(value: "date_of_birth")
+    CREATED_AT  @enum(value: "created_at")
+    UPDATED_AT  @enum(value: "updated_at")
+}
+#######################
+##########TYPE
+#######################
+type Resident {
+    id: ID
+    fullName: String @rename(attribute: "full_name")
+    gender: String
+    dateOfBirth: Date @rename(attribute: "date_of_birth")
+    phone: String
+    nationalId: String @rename(attribute: "national_id")
+    address: String
+    occupation: String
+    ethnicity: String
+    religion: String
+    educationLevel: String @rename(attribute: "education_level")
+    note: String
+    householdAsHead: [Household] @hasMany(relation: "householdAsHead")
+    household: [Household] @belongsToMany
+}

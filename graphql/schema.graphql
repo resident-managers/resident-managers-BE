@@ -1,0 +1,51 @@
+"A datetime string with format `Y-m-d H:i:s`, e.g. `2018-05-23 13:43:32`."
+scalar DateTime @scalar(class: "Nuwave\\Lighthouse\\Schema\\Types\\Scalars\\DateTime")
+
+"A date string with format `Y-m-d`, e.g. `2011-05-23`."
+scalar Date @scalar(class: "Nuwave\\Lighthouse\\Schema\\Types\\Scalars\\Date")
+
+type Query {
+    "Thông tin người dùng đang đăng nhập"
+    me: User @auth
+}
+
+type Mutation {
+    "Đăng nhập hệ thống"
+    login(input: LoginInput! @spread): AuthPayload
+}
+
+input LoginInput {
+    email: String!
+    password: String!
+}
+
+type AuthPayload {
+    access_token: String
+    user: User
+}
+
+type User {
+    id: ID!
+    name: String!
+    email: String!
+}
+
+
+
+type HouseholdMember {
+    id: ID!
+    fullName: String! @rename(attribute: "full_name")
+    gender: String!
+    dateOfBirth: Date @rename(attribute: "date_of_birth")
+    phone_number: String
+    nationalId: String @rename(attribute: "national_id")
+    relationship: HouseholdRelationship!
+}
+
+
+enum GenderEnum {
+    MALE @enum(value: "MALE")
+    FEMALE @enum(value: "FEMALE")
+}
+
+#import models/*.graphql

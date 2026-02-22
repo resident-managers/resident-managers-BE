@@ -1,0 +1,87 @@
+###############################
+###############QUERT
+##########################
+extend type Query @guard {
+    "Danh sách hộ dân"
+    houseHolds(
+        where: _ @whereConditions(columnsEnum: "HouseholdsWhereColumn")
+        orderBy: _ @orderBy(columnsEnum: "HouseholdsOrderByColumn")
+    ): [Household]
+    @paginate(defaultCount: 10)
+
+    "Chi tiết một hộ dân"
+    household(id: ID! @eq): Household @find
+}
+###############################
+###############MUTATION
+##########################
+extend type Mutation @guard{
+    "Tạo hộ dân mới"
+    householdCreate(input: HouseholdCreateInput! @spread): Household
+    "Cập nhật hộ dân"
+    householdUpdate(input: HouseholdUpdateInput! @spread): Household
+    "Xóa hộ dân"
+    householdDelete(id: ID! @whereKey): Household @delete
+}
+###############################
+###############INPUT
+##########################
+input HouseholdCreateInput {
+    code: String @rules(apply: ["unique:households,code", "max:20"])
+    residentId: ID! @rules(apply: ["required", "exists:residents,id"]) @rename(attribute: "resident_id")
+    address: String! @rules(apply: ["required"])
+    members: [HouseholdResidentInput!]
+}
+
+input HouseholdResidentInput {
+    residentId: ID! @rules(apply: ["exists:residents,id"]) @rename(attribute: "resident_id")
+    relationship: HouseholdRelationship! @rules(apply: ["required", "max:50"])
+}
+
+input HouseholdUpdateInput {
+    id: ID!
+    code: String @rules(apply: ["max:20"])
+    headId: ID @rules(apply: ["exists:residents,id"]) @rename(attribute: "head_id")
+    address: String
+    members: [HouseholdResidentInput!]
+    }
+###############################
+###############ENUM
+##########################
+enum HouseholdsWhereColumn {
+    CODE    @enum(value: "code")
+    ADDRESS @enum(value: "address")
+}
+
+enum HouseholdsOrderByColumn {
+    CODE       @enum(value: "code")
+    ADDRESS    @enum(value: "address")
+    CREATED_AT @enum(value: "created_at")
+    UPDATED_AT @enum(value: "updated_at")
+}
+###############################
+###############TYPE
+##########################
+type Household {
+    id: ID!
+    code: String
+    address: String!
+    head: Resident! @belongsTo
+    members: [HouseholdMember!]! @belongsToMany
+}
+
+type HouseholdMember {
+    id: ID!
+    fullName: String @rename(attribute: "full_name")
+    gender: String
+    dateOfBirth: Date @rename(attribute: "date_of_birth")
+    phone: String
+    nationalId: String @rename(attribute: "national_id")
+    address: String
+    occupation: String
+    ethnicity: String
+    religion: String
+    educationLevel: String @rename(attribute: "education_level")
+    note: String
+    relationship: HouseholdRelationship
+}
