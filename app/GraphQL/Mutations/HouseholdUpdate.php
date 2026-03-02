@@ -16,7 +16,7 @@ final readonly class HouseholdUpdate
 	    try {
 		    $household = Household::query()->findOrFail($args['id']);
 
-		    $residentIds = [$household->resident_id];
+		    $residentIds = [];
 		    foreach ($args['members'] ?? [] as $member) {
 			    $residentIds[] = $member['resident_id'];
 		    }

@@ -14,7 +14,7 @@ final readonly class HouseholdCreate
     {
         DB::beginTransaction();
 	    try {
-		    $residentIds = [$args['resident_id']];
+		    $residentIds = [];
 		    foreach ($args['members'] ?? [] as $member) {
 			    $residentIds[] = $member['resident_id'];
 		    }

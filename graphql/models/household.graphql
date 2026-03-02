@@ -27,22 +27,22 @@ extend type Mutation @guard{
 ###############################
 ###############INPUT
 ##########################
-input HouseholdCreateInput {
-    code: String @rules(apply: ["unique:households,code", "max:20"])
-    residentId: ID! @rules(apply: ["required", "exists:residents,id"]) @rename(attribute: "resident_id")
-    address: String! @rules(apply: ["required"])
+input HouseholdCreateInput @validator(class: "HouseholdCreateInputValidator") {
+    code: String
+    residentId: ID! @rename(attribute: "resident_id")
+    address: String!
     members: [HouseholdResidentInput!]
 }
 
 input HouseholdResidentInput {
-    residentId: ID! @rules(apply: ["exists:residents,id"]) @rename(attribute: "resident_id")
-    relationship: HouseholdRelationship! @rules(apply: ["required", "max:50"])
+    residentId: ID! @rename(attribute: "resident_id")
+    relationship: HouseholdRelationship!
 }
 
-input HouseholdUpdateInput {
+input HouseholdUpdateInput @validator(class: "HouseholdUpdateInputValidator") {
     id: ID!
-    code: String @rules(apply: ["max:20"])
-    headId: ID @rules(apply: ["exists:residents,id"]) @rename(attribute: "head_id")
+    code: String
+    headId: ID @rename(attribute: "head_id")
     address: String
     members: [HouseholdResidentInput!]
     }

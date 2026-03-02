@@ -29,12 +29,12 @@ extend type Mutation @guard {
 #######################
 ##########INPUT
 #######################
-input ResidentCreateInput {
-    fullName: String! @rules(apply: ["required", "max:100"]) @rename(attribute: "full_name")
+input ResidentCreateInput @validator(class: "ResidentCreateInputValidator") {
+    fullName: String! @rename(attribute: "full_name")
     gender: GenderEnum!
     dateOfBirth: Date @rename(attribute: "date_of_birth")
-    phone: String @rules(apply: ["max:15"])
-    nationalId: String @rules(apply: ["nullable", "max:20"]) @rename(attribute: "national_id")
+    phone: String
+    nationalId: String @rename(attribute: "national_id")
     address: String
     occupation: String
     ethnicity: String
@@ -43,13 +43,13 @@ input ResidentCreateInput {
     note: String
 }
 
-input ResidentUpdateInput {
+input ResidentUpdateInput @validator(class: "ResidentUpdateInputValidator") {
     id: ID
-    fullName: String! @rules(apply: ["required", "max:100"]) @rename(attribute: "full_name")
+    fullName: String! @rename(attribute: "full_name")
     gender: GenderEnum!
     dateOfBirth: Date @rename(attribute: "date_of_birth")
-    phone: String @rules(apply: ["max:15"])
-    nationalId: String @rules(apply: ["nullable", "max:20"]) @rename(attribute: "national_id")
+    phone: String
+    nationalId: String @rename(attribute: "national_id")
     address: String
     occupation: String
     ethnicity: String
