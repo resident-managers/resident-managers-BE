@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Concerns\HasUuids;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
@@ -58,11 +59,43 @@ class Resident extends Model
                     ->withTimestamps();
     }
 
-//    /**
-//     * Alias for GraphQL field `household`.
-//     */
-//    public function household(): BelongsToMany
-//    {
-//        return $this->houseHold();
-//    }
+	private function buildSearchQuery(Builder $query,?string $search): Builder
+	{
+		if (!empty($search)) {
+			$query->where(function ($query) use ($search) {
+				$query->where('full_name', 'like', "%$search%")
+					->orWhere('national_id', 'like', "%$search%")
+					->orWhere('phone', 'like', "%$search%");
+//					->orWhere('email', 'like', "%$search%")
+//					->orWhere('id', 'like', "%$search%");
+			});
+		}
+
+
+		return $query;
+	}
+
+	public function scopeSearch(Builder $query,?string $search): Builder
+	{
+		return $this->buildSearchQuery($query, $search);
+	}
+
+	public function scopeAvailableForHousehold(Builder $query, ?string $householdId = null): Builder
+	{
+		return $query
+			->whereNotIn('residents.id', function ($subQuery) use ($householdId) {
+				$subQuery->select('resident_id')
+					->from('household_residents')
+					->when($householdId !== null, function ($query) use ($householdId) {
+						$query->where('household_id', '!=', $householdId);
+					});
+			})
+			->whereNotIn('residents.id', function ($subQuery) use ($householdId) {
+				$subQuery->select('resident_id')
+					->from('households')
+					->when($householdId !== null, function ($query) use ($householdId) {
+						$query->where('id', '!=', $householdId);
+					});
+			});
+	}
 }

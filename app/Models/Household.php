@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Concerns\HasUuids;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
@@ -35,4 +36,25 @@ class Household extends Model
                     ->withPivot('relationship')
                     ->withTimestamps();
     }
+
+	private function buildSearchQuery(Builder $query,?string $search): Builder
+	{
+		if (!empty($search)) {
+			$query->where(function ($query) use ($search) {
+				$query->where('code', 'like', "%$search%")
+					->orWhere('address', 'like', "%$search%")
+					->orWhereHas('head', function (Builder $headQuery) use ($search) {
+						$headQuery->where('full_name', 'like', "%$search%");
+					});
+			});
+		}
+
+
+		return $query;
+	}
+
+	public function scopeSearch(Builder $query,?string $search): Builder
+	{
+		return $this->buildSearchQuery($query, $search);
+	}
 }

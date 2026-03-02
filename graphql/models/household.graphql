@@ -4,6 +4,7 @@
 extend type Query @guard {
     "Danh sách hộ dân"
     houseHolds(
+        search: String @scope(name: "search")
         where: _ @whereConditions(columnsEnum: "HouseholdsWhereColumn")
         orderBy: _ @orderBy(columnsEnum: "HouseholdsOrderByColumn")
     ): [Household]

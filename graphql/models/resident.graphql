@@ -4,6 +4,8 @@
 extend type Query @guard {
     "Danh sách dân cư có phân trang và tìm kiếm"
     residents(
+        search: String @scope(name: "search")
+        availableForHouseholdId: ID @scope(name: "availableForHousehold")
         where: _ @whereConditions(columnsEnum: "ResidentsWhereColumn")
         orderBy: _ @orderBy(columnsEnum: "ResidentsOrderByColumn")
     ): [Resident]
@@ -32,7 +34,7 @@ input ResidentCreateInput {
     gender: GenderEnum!
     dateOfBirth: Date @rename(attribute: "date_of_birth")
     phone: String @rules(apply: ["max:15"])
-    nationalId: String @rules(apply: ["unique:residents,national_id", "max:20"]) @rename(attribute: "national_id")
+    nationalId: String @rules(apply: ["nullable", "max:20"]) @rename(attribute: "national_id")
     address: String
     occupation: String
     ethnicity: String
@@ -47,7 +49,7 @@ input ResidentUpdateInput {
     gender: GenderEnum!
     dateOfBirth: Date @rename(attribute: "date_of_birth")
     phone: String @rules(apply: ["max:15"])
-    nationalId: String @rules(apply: ["unique:residents,national_id", "max:20"]) @rename(attribute: "national_id")
+    nationalId: String @rules(apply: ["nullable", "max:20"]) @rename(attribute: "national_id")
     address: String
     occupation: String
     ethnicity: String

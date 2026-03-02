@@ -4,6 +4,7 @@ namespace App\GraphQL\Mutations;
 
 use App\Models\Resident;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Validation\ValidationException;
 
 final readonly class ResidentCreate
 {
@@ -12,6 +13,23 @@ final readonly class ResidentCreate
     {
         DB::beginTransaction();
 	    try {
+			if (array_key_exists('national_id', $args)) {
+				$nationalId = trim((string) $args['national_id']);
+				$args['national_id'] = $nationalId === '' ? null : $nationalId;
+			}
+
+			if (($args['national_id'] ?? null) !== null) {
+				$exists = Resident::query()
+					->where('national_id', $args['national_id'])
+					->exists();
+
+				if ($exists) {
+					throw ValidationException::withMessages([
+						'national_id' => ['Số CCCD/CMND đã tồn tại.'],
+					]);
+				}
+			}
+
 			$resident = new Resident();
 			$resident->fill($args);
 		    $resident->save();
