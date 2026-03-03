@@ -4,6 +4,7 @@ namespace App\GraphQL\Mutations;
 
 use App\Enums\HouseholdRelationship;
 use App\Models\Household;
+use App\Support\HouseholdResidentGuard;
 use Illuminate\Support\Facades\DB;
 
 final readonly class HouseholdCreate
@@ -13,6 +14,12 @@ final readonly class HouseholdCreate
     {
         DB::beginTransaction();
 	    try {
+		    $residentIds = [];
+		    foreach ($args['members'] ?? [] as $member) {
+			    $residentIds[] = $member['resident_id'];
+		    }
+		    HouseholdResidentGuard::assertNotInOtherHouseholds($residentIds);
+
 		    $household = new Household();
 		    $household->code        = $args['code'] ?? null;
 		    $household->resident_id = $args['resident_id']; // chủ hộ

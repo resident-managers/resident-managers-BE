@@ -4,6 +4,7 @@ namespace App\GraphQL\Mutations;
 
 use App\Enums\HouseholdRelationship;
 use App\Models\Household;
+use App\Support\HouseholdResidentGuard;
 use Illuminate\Support\Facades\DB;
 
 final readonly class HouseholdUpdate
@@ -14,6 +15,12 @@ final readonly class HouseholdUpdate
         DB::beginTransaction();
 	    try {
 		    $household = Household::query()->findOrFail($args['id']);
+
+		    $residentIds = [];
+		    foreach ($args['members'] ?? [] as $member) {
+			    $residentIds[] = $member['resident_id'];
+		    }
+		    HouseholdResidentGuard::assertNotInOtherHouseholds($residentIds, $household->id);
 
 		    // Cập nhật thông tin hộ
 		    if (isset($args['code']))    $household->code    = $args['code'];
@@ -26,11 +33,11 @@ final readonly class HouseholdUpdate
 			    $members = [];
 
 			    // Giữ lại chủ hộ hiện tại, không cho thay đổi
-			    $members[$household->head_id] = ['relationship' => HouseholdRelationship::HEAD];
+			    $members[$household->resident_id] = ['relationship' => HouseholdRelationship::HEAD];
 
 			    foreach ($args['members'] as $member) {
 				    // Bỏ qua nếu trùng với chủ hộ
-				    if ($member['resident_id'] === $household->head_id) continue;
+				    if ($member['resident_id'] === $household->resident_id) continue;
 				    // Bỏ qua nếu cố tình gán relationship HEAD cho thành viên khác
 				    if ($member['relationship'] === HouseholdRelationship::HEAD) continue;
 
