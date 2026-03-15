@@ -6,7 +6,7 @@ use BenSampo\Enum\Enum;
 
 final class HouseholdRelationship extends Enum
 {
-// Chủ hộ
+	// Chủ hộ
 	const HEAD = 'head';
 
 	// Vợ chồng
@@ -18,10 +18,27 @@ final class HouseholdRelationship extends Enum
 	const MOTHER = 'mother';
 
 	// Con
-	const SON = 'son';
+	const CHILD = 'child';
 
 	// Anh chị em
-	const OLDER_BROTHER = 'older_brother'; // anh trai
-	const OLDER_SISTER  = 'older_sister';  // chị gái
+	const OLDER_BROTHER   = 'older_brother';   // anh trai
+	const OLDER_SISTER    = 'older_sister';    // chị gái
 	const YOUNGER_SIBLING = 'younger_sibling'; // em (không phân giới tính)
+
+	// Ông bà
+	const GRANDFATHER = 'grandfather'; // ông
+	const GRANDMOTHER = 'grandmother'; // bà
+
+	// Cháu
+	const GRANDCHILD = 'grandchild'; // cháu (nội/ngoại)
+
+	// Chú bác cô dì
+	const UNCLE = 'uncle'; // chú/bác/cậu
+	const AUNT  = 'aunt';  // cô/dì/thím
+
+	// Cháu gọi bằng chú/bác/cô/dì
+	const NEPHEW_NIECE = 'nephew_niece';
+
+	// Khác
+	const OTHER = 'other';
 }

@@ -1,0 +1,74 @@
+##########################
+########## QUERY
+##########################
+extend type Query @guard {
+    "Danh sách bảo hiểm xã hội"
+    socialInsurances(
+        where: _ @whereConditions(columnsEnum: "SocialInsurancesWhereColumn")
+        orderBy: _ @orderBy(columnsEnum: "SocialInsurancesOrderByColumn")
+    ): [SocialInsurance]
+    @paginate(defaultCount: 10)
+
+    "Chi tiết bảo hiểm xã hội"
+    socialInsurance(id: ID! @eq): SocialInsurance @find
+}
+##########################
+########## MUTATION
+##########################
+extend type Mutation @guard {
+    "Thêm thông tin bảo hiểm xã hội"
+    socialInsuranceCreate(input: SocialInsuranceCreateInput! @spread): SocialInsurance
+    "Cập nhật bảo hiểm xã hội"
+    socialInsuranceUpdate(input: SocialInsuranceUpdateInput! @spread): SocialInsurance
+    "Xóa bảo hiểm xã hội"
+    socialInsuranceDelete(id: ID! @whereKey): SocialInsurance @delete
+}
+##########################
+########## INPUT
+##########################
+input SocialInsuranceCreateInput @validator(class: "SocialInsuranceCreateInputValidator") {
+    residentId:    ID!               @rename(attribute: "resident_id")
+    code:          String!
+    employer:      String
+    enrolledDate:  Date              @rename(attribute: "enrolled_date")
+    insuranceType: InsuranceType @rename(attribute: "insurance_type")
+    status:        SocialInsuranceStatus
+}
+
+input SocialInsuranceUpdateInput @validator(class: "SocialInsuranceUpdateInputValidator") {
+    id:            ID!
+    code:          String
+    employer:      String
+    enrolledDate:  Date              @rename(attribute: "enrolled_date")
+    insuranceType: InsuranceType @rename(attribute: "insurance_type")
+    status:        SocialInsuranceStatus
+}
+##########################
+########## ENUM
+##########################
+enum SocialInsurancesWhereColumn {
+    RESIDENT_ID    @enum(value: "resident_id")
+    CODE           @enum(value: "code")
+    INSURANCE_TYPE @enum(value: "insurance_type")
+    STATUS         @enum(value: "status")
+}
+
+enum SocialInsurancesOrderByColumn {
+    ENROLLED_DATE @enum(value: "enrolled_date")
+    CREATED_AT    @enum(value: "created_at")
+}
+
+##########################
+########## TYPE
+##########################
+type SocialInsurance {
+    id: ID!
+    resident: Resident!              @belongsTo
+    code: String!
+    employer: String
+    enrolledDate: Date               @rename(attribute: "enrolled_date")
+    insuranceType: InsuranceType @rename(attribute: "insurance_type")
+    status: SocialInsuranceStatus
+    createdAt: DateTime              @rename(attribute: "created_at")
+    updatedAt: DateTime              @rename(attribute: "updated_at")
+}

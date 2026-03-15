@@ -30,7 +30,7 @@ class AuthTest extends TestCase
 
         $response = $this->graphQL('
             mutation {
-                dangNhap(email: "test@example.com", password: "password") {
+                login(input: { email: "test@example.com", password: "password" }) {
                     access_token
                     user {
                         email
@@ -41,7 +41,7 @@ class AuthTest extends TestCase
 
         $response->assertJsonStructure([
             'data' => [
-                'dangNhap' => [
+                'login' => [
                     'access_token',
                     'user' => [
                         'email'
@@ -50,7 +50,7 @@ class AuthTest extends TestCase
             ]
         ]);
 
-        $this->assertNotEmpty($response->json('data.dangNhap.access_token'));
+        $this->assertNotEmpty($response->json('data.login.access_token'));
     }
 
     public function test_user_can_get_me_query_with_token(): void

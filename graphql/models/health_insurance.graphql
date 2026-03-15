@@ -1,0 +1,70 @@
+##########################
+########## QUERY
+##########################
+extend type Query @guard {
+    "Danh sách bảo hiểm y tế"
+    healthInsurances(
+        where: _ @whereConditions(columnsEnum: "HealthInsurancesWhereColumn")
+        orderBy: _ @orderBy(columnsEnum: "HealthInsurancesOrderByColumn")
+    ): [HealthInsurance]
+    @paginate(defaultCount: 10)
+
+    "Chi tiết bảo hiểm y tế"
+    healthInsurance(id: ID! @eq): HealthInsurance @find
+}
+##########################
+########## MUTATION
+##########################
+extend type Mutation @guard {
+    "Thêm thông tin bảo hiểm y tế"
+    healthInsuranceCreate(input: HealthInsuranceCreateInput! @spread): HealthInsurance
+    "Cập nhật bảo hiểm y tế"
+    healthInsuranceUpdate(input: HealthInsuranceUpdateInput! @spread): HealthInsurance
+    "Xóa bảo hiểm y tế"
+    healthInsuranceDelete(id: ID! @whereKey): HealthInsurance @delete
+}
+##########################
+########## INPUT
+##########################
+input HealthInsuranceCreateInput @validator(class: "HealthInsuranceCreateInputValidator") {
+    residentId:         ID!     @rename(attribute: "resident_id")
+    code:               String!
+    healthcareFacility: String  @rename(attribute: "healthcare_facility")
+    issuedDate:         Date    @rename(attribute: "issued_date")
+    expiryDate:         Date    @rename(attribute: "expiry_date")
+}
+
+input HealthInsuranceUpdateInput @validator(class: "HealthInsuranceUpdateInputValidator") {
+    id:                 ID!
+    code:               String
+    healthcareFacility: String  @rename(attribute: "healthcare_facility")
+    issuedDate:         Date    @rename(attribute: "issued_date")
+    expiryDate:         Date    @rename(attribute: "expiry_date")
+}
+##########################
+########## ENUM
+##########################
+enum HealthInsurancesWhereColumn {
+    RESIDENT_ID @enum(value: "resident_id")
+    CODE        @enum(value: "code")
+    EXPIRY_DATE @enum(value: "expiry_date")
+}
+
+enum HealthInsurancesOrderByColumn {
+    EXPIRY_DATE @enum(value: "expiry_date")
+    ISSUED_DATE @enum(value: "issued_date")
+    CREATED_AT  @enum(value: "created_at")
+}
+##########################
+########## TYPE
+##########################
+type HealthInsurance {
+    id: ID!
+    resident: Resident!         @belongsTo
+    code: String!
+    healthcareFacility: String  @rename(attribute: "healthcare_facility")
+    issuedDate: Date            @rename(attribute: "issued_date")
+    expiryDate: Date            @rename(attribute: "expiry_date")
+    createdAt: DateTime         @rename(attribute: "created_at")
+    updatedAt: DateTime         @rename(attribute: "updated_at")
+}

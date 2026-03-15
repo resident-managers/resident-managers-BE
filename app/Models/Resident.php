@@ -8,6 +8,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\HasOne;
 
 class Resident extends Model
 {
@@ -26,6 +27,8 @@ class Resident extends Model
 		'religion',
 		'education_level',
 		'note',
+		'type',
+		'permanent_address',
 	];
 
 
@@ -57,6 +60,36 @@ class Resident extends Model
         return $this->belongsToMany(Household::class, 'household_residents', 'resident_id', 'household_id')
                     ->withPivot('relationship')
                     ->withTimestamps();
+    }
+
+    public function temporaryResidences(): HasMany
+    {
+        return $this->hasMany(TemporaryResidence::class);
+    }
+
+    public function latestTemporaryResidence(): HasOne
+    {
+        return $this->hasOne(TemporaryResidence::class)->latestOfMany();
+    }
+
+    public function temporaryAbsences(): HasMany
+    {
+        return $this->hasMany(TemporaryAbsence::class);
+    }
+
+    public function latestTemporaryAbsence(): HasOne
+    {
+        return $this->hasOne(TemporaryAbsence::class)->latestOfMany();
+    }
+
+    public function healthInsurance(): HasOne
+    {
+        return $this->hasOne(HealthInsurance::class);
+    }
+
+    public function socialInsurance(): HasOne
+    {
+        return $this->hasOne(SocialInsurance::class);
     }
 
 	private function buildSearchQuery(Builder $query,?string $search): Builder
