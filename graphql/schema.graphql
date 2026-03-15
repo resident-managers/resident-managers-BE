@@ -52,4 +52,23 @@ enum GenderEnum {
     FEMALE @enum(value: "FEMALE")
 }
 
+extend type Query @guard {
+    "Thống kê tổng hợp dân cư"
+    statistics: ResidentStatistics
+    @field(resolver: "App\\GraphQL\\Queries\\Statistics")
+}
+
+type ResidentStatistics {
+    totalResidents:             Int @rename(attribute: "total_residents")
+    totalHouseholds:            Int @rename(attribute: "total_households")
+    maleCount:                  Int @rename(attribute: "male_count")
+    femaleCount:                Int @rename(attribute: "female_count")
+    permanentCount:             Int @rename(attribute: "permanent_count")
+    temporaryCount:             Int @rename(attribute: "temporary_count")
+    absentCount:                Int @rename(attribute: "absent_count")
+    movedOutCount:              Int @rename(attribute: "moved_out_count")
+    activeTemporaryResidences:  Int @rename(attribute: "active_temporary_residences")
+    activeTemporaryAbsences:    Int @rename(attribute: "active_temporary_absences")
+}
+
 #import models/*.graphql

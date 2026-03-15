@@ -26,6 +26,8 @@ final class ResidentUpdateInputValidator extends Validator
             'religion' => ['nullable', 'string'],
             'educationLevel' => ['nullable', 'string'],
             'note' => ['nullable', 'string'],
+            'residenceType' => ['nullable'],
+            'permanentAddress' => ['nullable', 'string'],
         ];
     }
 }

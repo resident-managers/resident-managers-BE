@@ -1,0 +1,70 @@
+##########################
+########## QUERY
+##########################
+extend type Query @guard {
+    "Danh sách đăng ký tạm vắng"
+    temporaryAbsences(
+        where: _ @whereConditions(columnsEnum: "TemporaryAbsencesWhereColumn")
+        orderBy: _ @orderBy(columnsEnum: "TemporaryAbsencesOrderByColumn")
+    ): [TemporaryAbsence]
+    @paginate(defaultCount: 10)
+
+    "Chi tiết một đăng ký tạm vắng"
+    temporaryAbsence(id: ID! @eq): TemporaryAbsence @find
+}
+##########################
+########## MUTATION
+##########################
+extend type Mutation @guard {
+    "Đăng ký tạm vắng"
+    temporaryAbsenceCreate(input: TemporaryAbsenceCreateInput! @spread): TemporaryAbsence
+    "Cập nhật tạm vắng"
+    temporaryAbsenceUpdate(input: TemporaryAbsenceUpdateInput! @spread): TemporaryAbsence
+    "Xóa đăng ký tạm vắng"
+    temporaryAbsenceDelete(id: ID! @whereKey): TemporaryAbsence @delete
+}
+##########################
+########## INPUT
+##########################
+input TemporaryAbsenceCreateInput @validator(class: "TemporaryAbsenceCreateInputValidator") {
+    residentId:  ID!     @rename(attribute: "resident_id")
+    destination: String!
+    fromDate:    Date!   @rename(attribute: "from_date")
+    toDate:      Date    @rename(attribute: "to_date")
+    reason:      String
+}
+
+input TemporaryAbsenceUpdateInput @validator(class: "TemporaryAbsenceUpdateInputValidator") {
+    id:          ID!
+    destination: String
+    fromDate:    Date    @rename(attribute: "from_date")
+    toDate:      Date    @rename(attribute: "to_date")
+    reason:      String
+}
+##########################
+########## ENUM
+##########################
+enum TemporaryAbsencesWhereColumn {
+    RESIDENT_ID @enum(value: "resident_id")
+    FROM_DATE   @enum(value: "from_date")
+    TO_DATE     @enum(value: "to_date")
+}
+
+enum TemporaryAbsencesOrderByColumn {
+    FROM_DATE  @enum(value: "from_date")
+    TO_DATE    @enum(value: "to_date")
+    CREATED_AT @enum(value: "created_at")
+}
+##########################
+########## TYPE
+##########################
+type TemporaryAbsence {
+    id: ID!
+    resident: Resident! @belongsTo
+    destination: String!
+    fromDate: Date!     @rename(attribute: "from_date")
+    toDate: Date        @rename(attribute: "to_date")
+    reason: String
+    createdAt: DateTime @rename(attribute: "created_at")
+    updatedAt: DateTime @rename(attribute: "updated_at")
+}

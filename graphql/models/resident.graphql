@@ -41,6 +41,8 @@ input ResidentCreateInput @validator(class: "ResidentCreateInputValidator") {
     religion: String
     educationLevel: String @rename(attribute: "education_level")
     note: String
+    residenceType: ResidenceType @rename(attribute: "type")
+    permanentAddress: String @rename(attribute: "permanent_address")
 }
 
 input ResidentUpdateInput @validator(class: "ResidentUpdateInputValidator") {
@@ -56,6 +58,8 @@ input ResidentUpdateInput @validator(class: "ResidentUpdateInputValidator") {
     religion: String
     educationLevel: String @rename(attribute: "education_level")
     note: String
+    residenceType: ResidenceType @rename(attribute: "type")
+    permanentAddress: String @rename(attribute: "permanent_address")
 }
 
 #######################
@@ -72,6 +76,8 @@ enum ResidentsWhereColumn {
     RELIGION        @enum(value: "religion")
     EDUCATION_LEVEL @enum(value: "education_level")
     DATE_OF_BIRTH   @enum(value: "date_of_birth")
+    TYPE              @enum(value: "type")
+    PERMANENT_ADDRESS @enum(value: "permanent_address")
 }
 
 enum ResidentsOrderByColumn {
@@ -96,6 +102,12 @@ type Resident {
     religion: String
     educationLevel: String @rename(attribute: "education_level")
     note: String
-    householdAsHead: [Household] @hasMany(relation: "householdAsHead")
-    household: [Household] @belongsToMany
+    residenceType: ResidenceType @rename(attribute: "type")
+    permanentAddress: String         @rename(attribute: "permanent_address")
+    householdAsHead: [Household]     @hasMany(relation: "householdAsHead")
+    household: [Household]           @belongsToMany
+    temporaryResidences: [TemporaryResidence] @hasMany
+    temporaryAbsences: [TemporaryAbsence]     @hasMany
+    healthInsurance: HealthInsurance @hasOne
+    socialInsurance: SocialInsurance @hasOne
 }
