@@ -2,6 +2,7 @@
 
 namespace App\GraphQL\Validators;
 
+use Illuminate\Validation\Rule;
 use Nuwave\Lighthouse\Validation\Validator;
 
 final class SocialInsuranceUpdateInputValidator extends Validator
@@ -15,7 +16,7 @@ final class SocialInsuranceUpdateInputValidator extends Validator
     {
         return [
             'id'            => ['required', 'uuid', 'exists:social_insurances,id'],
-            'code'          => ['nullable', 'string', 'max:10'],
+            'code'          => ['nullable', 'string', 'max:10', Rule::unique('social_insurances', 'code')->ignore($this->arg('id'))],
             'employer'      => ['nullable', 'string'],
             'enrolledDate'  => ['nullable', 'date'],
             'insuranceType' => ['nullable'],

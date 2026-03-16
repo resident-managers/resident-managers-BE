@@ -37,8 +37,8 @@ final readonly class Statistics
         return [
             'total_residents'             => Resident::count(),
             'total_households'            => Household::count(),
-            'male_count'                  => $byGender['MALE']      ?? 0,
-            'female_count'                => $byGender['FEMALE']    ?? 0,
+            'male_count'                  => $byGender['male']      ?? 0,
+            'female_count'                => $byGender['female']    ?? 0,
             'permanent_count'             => $byResidenceType['permanent']  ?? 0,
             'temporary_count'             => $byResidenceType['temporary']  ?? 0,
             'absent_count'                => $byResidenceType['absent']     ?? 0,

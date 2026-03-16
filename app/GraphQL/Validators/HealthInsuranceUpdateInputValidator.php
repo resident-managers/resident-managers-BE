@@ -2,6 +2,7 @@
 
 namespace App\GraphQL\Validators;
 
+use Illuminate\Validation\Rule;
 use Nuwave\Lighthouse\Validation\Validator;
 
 final class HealthInsuranceUpdateInputValidator extends Validator
@@ -15,7 +16,7 @@ final class HealthInsuranceUpdateInputValidator extends Validator
     {
         return [
             'id'                 => ['required', 'uuid', 'exists:health_insurances,id'],
-            'code'               => ['nullable', 'string', 'max:20'],
+            'code'               => ['nullable', 'string', 'max:20', Rule::unique('health_insurances', 'code')->ignore($this->arg('id'))],
             'healthcareFacility' => ['nullable', 'string'],
             'issuedDate'         => ['nullable', 'date'],
             'expiryDate'         => ['nullable', 'date', 'after_or_equal:issuedDate'],
