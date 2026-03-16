@@ -14,9 +14,6 @@ final readonly class SocialInsuranceCreate
     {
         DB::beginTransaction();
         try {
-            $args['resident_id'] = $args['residentId'];
-            unset($args['residentId']);
-
             if (!Resident::find($args['resident_id'])) {
                 throw ValidationException::withMessages([
                     'resident_id' => ['Dân cư không tồn tại.'],

@@ -14,9 +14,6 @@ final readonly class TemporaryAbsenceCreate
     {
         DB::beginTransaction();
         try {
-            $args['resident_id'] = $args['residentId'];
-            unset($args['residentId']);
-
             $resident = Resident::find($args['resident_id']);
             if (!$resident) {
                 throw ValidationException::withMessages([
