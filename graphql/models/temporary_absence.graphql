@@ -27,7 +27,7 @@ extend type Mutation @guard {
 ########## INPUT
 ##########################
 input TemporaryAbsenceCreateInput @validator(class: "TemporaryAbsenceCreateInputValidator") {
-    residentId:  ID!     @rename(attribute: "resident_id")
+    residentId:  ID!
     destination: String!
     fromDate:    Date!   @rename(attribute: "from_date")
     toDate:      Date    @rename(attribute: "to_date")

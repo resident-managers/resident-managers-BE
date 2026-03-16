@@ -27,7 +27,7 @@ extend type Mutation @guard {
 ########## INPUT
 ##########################
 input TemporaryResidenceCreateInput @validator(class: "TemporaryResidenceCreateInputValidator") {
-    residentId: ID!     @rename(attribute: "resident_id")
+    residentId: ID!
     address: String!
     hostName: String    @rename(attribute: "host_name")
     fromDate: Date!     @rename(attribute: "from_date")

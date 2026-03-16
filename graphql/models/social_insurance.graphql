@@ -27,7 +27,7 @@ extend type Mutation @guard {
 ########## INPUT
 ##########################
 input SocialInsuranceCreateInput @validator(class: "SocialInsuranceCreateInputValidator") {
-    residentId:    ID!               @rename(attribute: "resident_id")
+    residentId:    ID!
     code:          String!
     employer:      String
     enrolledDate:  Date              @rename(attribute: "enrolled_date")
