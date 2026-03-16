@@ -92,7 +92,7 @@ enum ResidentsOrderByColumn {
 type Resident {
     id: ID
     fullName: String @rename(attribute: "full_name")
-    gender: String
+    gender: GenderEnum
     dateOfBirth: Date @rename(attribute: "date_of_birth")
     phone: String
     nationalId: String @rename(attribute: "national_id")

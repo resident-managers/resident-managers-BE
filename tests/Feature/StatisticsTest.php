@@ -30,10 +30,10 @@ class StatisticsTest extends TestCase
 
     public function test_statistics_returns_correct_counts(): void
     {
-        Resident::factory()->count(3)->create(['gender' => 'MALE',   'type' => 'permanent']);
-        Resident::factory()->count(2)->create(['gender' => 'FEMALE', 'type' => 'permanent']);
-        Resident::factory()->count(1)->create(['gender' => 'MALE',   'type' => 'temporary']);
-        Resident::factory()->count(1)->create(['gender' => 'FEMALE', 'type' => 'absent']);
+        Resident::factory()->count(3)->create(['gender' => 'male',   'type' => 'permanent']);
+        Resident::factory()->count(2)->create(['gender' => 'female', 'type' => 'permanent']);
+        Resident::factory()->count(1)->create(['gender' => 'male',   'type' => 'temporary']);
+        Resident::factory()->count(1)->create(['gender' => 'female', 'type' => 'absent']);
 
         $response = $this->auth()->graphQL('
             query {
