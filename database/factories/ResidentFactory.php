@@ -18,7 +18,7 @@ class ResidentFactory extends Factory
     {
         return [
             'full_name'        => fake()->name(),
-            'gender'           => fake()->randomElement(['MALE', 'FEMALE']),
+            'gender'           => fake()->randomElement(['male', 'female']),
             'date_of_birth'    => fake()->date(),
             'phone'            => fake()->numerify('0#########'),
             'national_id'      => fake()->unique()->numerify('0##########'),

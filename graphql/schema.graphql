@@ -39,7 +39,7 @@ type User {
 type HouseholdMember {
     id: ID!
     fullName: String! @rename(attribute: "full_name")
-    gender: String!
+    gender: GenderEnum
     dateOfBirth: Date @rename(attribute: "date_of_birth")
     phone_number: String
     nationalId: String @rename(attribute: "national_id")
@@ -48,8 +48,8 @@ type HouseholdMember {
 
 
 enum GenderEnum {
-    MALE @enum(value: "MALE")
-    FEMALE @enum(value: "FEMALE")
+    MALE @enum(value: "male")
+    FEMALE @enum(value: "female")
 }
 
 extend type Query @guard {

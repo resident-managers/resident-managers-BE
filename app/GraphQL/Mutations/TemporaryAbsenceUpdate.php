@@ -20,7 +20,7 @@ final readonly class TemporaryAbsenceUpdate
                 ]);
             }
 
-            $record->fill($args);
+            $record->fill(collect($args)->except('id')->toArray());
             $record->save();
 
             DB::commit();
