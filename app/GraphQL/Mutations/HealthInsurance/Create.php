@@ -1,32 +1,34 @@
 <?php declare(strict_types=1);
 
-namespace App\GraphQL\Mutations;
+namespace App\GraphQL\Mutations\HealthInsurance;
 
+use App\Models\HealthInsurance;
 use App\Models\Resident;
-use App\Models\TemporaryResidence;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Validation\ValidationException;
 
-final readonly class TemporaryResidenceCreate
+final readonly class Create
 {
     /** @param array{} $args */
-    public function __invoke(null $_, array $args): TemporaryResidence
+    public function __invoke(null $_, array $args): HealthInsurance
     {
         DB::beginTransaction();
         try {
-            $resident = Resident::find($args['resident_id']);
-            if (!$resident) {
+            if (!Resident::find($args['resident_id'])) {
                 throw ValidationException::withMessages([
                     'resident_id' => ['Dân cư không tồn tại.'],
                 ]);
             }
 
-            $record = new TemporaryResidence();
+            if (HealthInsurance::where('resident_id', $args['resident_id'])->exists()) {
+                throw ValidationException::withMessages([
+                    'resident_id' => ['Dân cư đã có thông tin bảo hiểm y tế.'],
+                ]);
+            }
+
+            $record = new HealthInsurance();
             $record->fill($args);
             $record->save();
-
-            $resident->type = 'temporary';
-            $resident->save();
 
             DB::commit();
             return $record;

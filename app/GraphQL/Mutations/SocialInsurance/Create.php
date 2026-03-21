@@ -1,16 +1,16 @@
 <?php declare(strict_types=1);
 
-namespace App\GraphQL\Mutations;
+namespace App\GraphQL\Mutations\SocialInsurance;
 
-use App\Models\HealthInsurance;
 use App\Models\Resident;
+use App\Models\SocialInsurance;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Validation\ValidationException;
 
-final readonly class HealthInsuranceCreate
+final readonly class Create
 {
     /** @param array{} $args */
-    public function __invoke(null $_, array $args): HealthInsurance
+    public function __invoke(null $_, array $args): SocialInsurance
     {
         DB::beginTransaction();
         try {
@@ -20,13 +20,13 @@ final readonly class HealthInsuranceCreate
                 ]);
             }
 
-            if (HealthInsurance::where('resident_id', $args['resident_id'])->exists()) {
+            if (SocialInsurance::where('resident_id', $args['resident_id'])->exists()) {
                 throw ValidationException::withMessages([
-                    'resident_id' => ['Dân cư đã có thông tin bảo hiểm y tế.'],
+                    'resident_id' => ['Dân cư đã có thông tin bảo hiểm xã hội.'],
                 ]);
             }
 
-            $record = new HealthInsurance();
+            $record = new SocialInsurance();
             $record->fill($args);
             $record->save();
 

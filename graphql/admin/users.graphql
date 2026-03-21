@@ -1,0 +1,14 @@
+extend type Mutation @guard(with: ["admin"]) {
+    "Tạo tài khoản người dùng mới (chỉ admin)"
+    userCreate(input: UserCreateInput! @spread): User!
+    @hasPermission(name: "create users")
+    @field(resolver: "App\\GraphQL\\Mutations\\Users\\Create")
+}
+
+input UserCreateInput @validator(class: "UserCreateInputValidator") {
+    name: String!
+    email: String!
+    password: String!
+    password_confirmation: String!
+    role: String
+}

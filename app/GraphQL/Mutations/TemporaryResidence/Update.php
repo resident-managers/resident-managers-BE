@@ -1,22 +1,22 @@
 <?php declare(strict_types=1);
 
-namespace App\GraphQL\Mutations;
+namespace App\GraphQL\Mutations\TemporaryResidence;
 
-use App\Models\HealthInsurance;
+use App\Models\TemporaryResidence;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Validation\ValidationException;
 
-final readonly class HealthInsuranceUpdate
+final readonly class Update
 {
     /** @param array{} $args */
-    public function __invoke(null $_, array $args): HealthInsurance
+    public function __invoke(null $_, array $args): TemporaryResidence
     {
         DB::beginTransaction();
         try {
-            $record = HealthInsurance::find($args['id']);
+            $record = TemporaryResidence::find($args['id']);
             if (!$record) {
                 throw ValidationException::withMessages([
-                    'id' => ['Thông tin bảo hiểm y tế không tồn tại.'],
+                    'id' => ['Bản ghi tạm trú không tồn tại.'],
                 ]);
             }
 

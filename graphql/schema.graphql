@@ -10,17 +10,50 @@ type Query {
 }
 
 type Mutation {
-    "Đăng nhập hệ thống"
+    "Đăng nhập hệ thống (user)"
     login(input: LoginInput! @spread): AuthPayload
+        @field(resolver: "App\\GraphQL\\Mutations\\Auth\\Login")
+
+    "Đăng nhập hệ thống (admin)"
+    adminLogin(input: LoginInput! @spread): AuthPayload
+        @field(resolver: "App\\GraphQL\\Mutations\\Auth\\AdminLogin")
+
+    "Yêu cầu đặt lại mật khẩu"
+    forgotPassword(input: ForgotPasswordInput! @spread): ForgotPasswordPayload!
+        @field(resolver: "App\\GraphQL\\Mutations\\Users\\ForgotPassword")
+
+    "Đặt lại mật khẩu bằng token"
+    resetPassword(input: ResetPasswordInput! @spread): ResetPasswordPayload!
+        @field(resolver: "App\\GraphQL\\Mutations\\Users\\ResetPassword")
+}
+
+type ForgotPasswordPayload {
+    message: String!
+}
+
+type ResetPasswordPayload {
+    message: String!
 }
 
 extend type Mutation @guard {
     logout: Boolean!
+        @field(resolver: "App\\GraphQL\\Mutations\\Auth\\Logout")
 }
 
 input LoginInput {
     email: String!
     password: String!
+}
+
+input ForgotPasswordInput @validator(class: "ForgotPasswordInputValidator") {
+    email: String!
+}
+
+input ResetPasswordInput @validator(class: "ResetPasswordInputValidator") {
+    token: String!
+    email: String!
+    password: String!
+    password_confirmation: String!
 }
 
 type AuthPayload {
@@ -32,6 +65,7 @@ type User {
     id: ID!
     name: String!
     email: String!
+    roles: [String!]! @method(name: "getRoleNames")
 }
 
 
@@ -55,7 +89,8 @@ enum GenderEnum {
 extend type Query @guard {
     "Thống kê tổng hợp dân cư"
     statistics: ResidentStatistics
-    @field(resolver: "App\\GraphQL\\Queries\\Statistics")
+        @hasPermission(name: "view statistics")
+        @field(resolver: "App\\GraphQL\\Queries\\Statistics")
 }
 
 type ResidentStatistics {
@@ -72,3 +107,4 @@ type ResidentStatistics {
 }
 
 #import models/*.graphql
+#import admin/*.graphql

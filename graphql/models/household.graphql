@@ -8,21 +8,30 @@ extend type Query @guard {
         where: _ @whereConditions(columnsEnum: "HouseholdsWhereColumn")
         orderBy: _ @orderBy(columnsEnum: "HouseholdsOrderByColumn")
     ): [Household]
-    @paginate(defaultCount: 10)
+        @hasPermission(name: "view households")
+        @paginate(defaultCount: 10)
 
     "Chi tiết một hộ dân"
-    household(id: ID! @eq): Household @find
+    household(id: ID! @eq): Household
+        @hasPermission(name: "view households")
+        @find
 }
 ###############################
 ###############MUTATION
 ##########################
-extend type Mutation @guard{
+extend type Mutation @guard {
     "Tạo hộ dân mới"
     householdCreate(input: HouseholdCreateInput! @spread): Household
+        @hasPermission(name: "create households")
+        @field(resolver: "App\\GraphQL\\Mutations\\Households\\Create")
     "Cập nhật hộ dân"
     householdUpdate(input: HouseholdUpdateInput! @spread): Household
+        @hasPermission(name: "update households")
+        @field(resolver: "App\\GraphQL\\Mutations\\Households\\Update")
     "Xóa hộ dân"
-    householdDelete(id: ID! @whereKey): Household @delete
+    householdDelete(id: ID! @whereKey): Household
+        @hasPermission(name: "delete households")
+        @delete
 }
 ###############################
 ###############INPUT

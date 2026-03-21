@@ -7,10 +7,13 @@ extend type Query @guard {
         where: _ @whereConditions(columnsEnum: "TemporaryResidencesWhereColumn")
         orderBy: _ @orderBy(columnsEnum: "TemporaryResidencesOrderByColumn")
     ): [TemporaryResidence]
-    @paginate(defaultCount: 10)
+        @hasPermission(name: "view temporary residence")
+        @paginate(defaultCount: 10)
 
     "Chi tiết một đăng ký tạm trú"
-    temporaryResidence(id: ID! @eq): TemporaryResidence @find
+    temporaryResidence(id: ID! @eq): TemporaryResidence
+        @hasPermission(name: "view temporary residence")
+        @find
 }
 ##########################
 ########## MUTATION
@@ -18,10 +21,16 @@ extend type Query @guard {
 extend type Mutation @guard {
     "Đăng ký tạm trú"
     temporaryResidenceCreate(input: TemporaryResidenceCreateInput! @spread): TemporaryResidence
+        @hasPermission(name: "create temporary residence")
+        @field(resolver: "App\\GraphQL\\Mutations\\TemporaryResidence\\Create")
     "Cập nhật tạm trú"
     temporaryResidenceUpdate(input: TemporaryResidenceUpdateInput! @spread): TemporaryResidence
+        @hasPermission(name: "update temporary residence")
+        @field(resolver: "App\\GraphQL\\Mutations\\TemporaryResidence\\Update")
     "Xóa đăng ký tạm trú"
-    temporaryResidenceDelete(id: ID! @whereKey): TemporaryResidence @delete
+    temporaryResidenceDelete(id: ID! @whereKey): TemporaryResidence
+        @hasPermission(name: "delete temporary residence")
+        @delete
 }
 ##########################
 ########## INPUT

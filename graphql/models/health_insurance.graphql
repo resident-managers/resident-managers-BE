@@ -7,10 +7,13 @@ extend type Query @guard {
         where: _ @whereConditions(columnsEnum: "HealthInsurancesWhereColumn")
         orderBy: _ @orderBy(columnsEnum: "HealthInsurancesOrderByColumn")
     ): [HealthInsurance]
-    @paginate(defaultCount: 10)
+        @hasPermission(name: "view health insurance")
+        @paginate(defaultCount: 10)
 
     "Chi tiết bảo hiểm y tế"
-    healthInsurance(id: ID! @eq): HealthInsurance @find
+    healthInsurance(id: ID! @eq): HealthInsurance
+        @hasPermission(name: "view health insurance")
+        @find
 }
 ##########################
 ########## MUTATION
@@ -18,10 +21,16 @@ extend type Query @guard {
 extend type Mutation @guard {
     "Thêm thông tin bảo hiểm y tế"
     healthInsuranceCreate(input: HealthInsuranceCreateInput! @spread): HealthInsurance
+        @hasPermission(name: "create health insurance")
+        @field(resolver: "App\\GraphQL\\Mutations\\HealthInsurance\\Create")
     "Cập nhật bảo hiểm y tế"
     healthInsuranceUpdate(input: HealthInsuranceUpdateInput! @spread): HealthInsurance
+        @hasPermission(name: "update health insurance")
+        @field(resolver: "App\\GraphQL\\Mutations\\HealthInsurance\\Update")
     "Xóa bảo hiểm y tế"
-    healthInsuranceDelete(id: ID! @whereKey): HealthInsurance @delete
+    healthInsuranceDelete(id: ID! @whereKey): HealthInsurance
+        @hasPermission(name: "delete health insurance")
+        @delete
 }
 ##########################
 ########## INPUT

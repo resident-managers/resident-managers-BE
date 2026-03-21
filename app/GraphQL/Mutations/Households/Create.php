@@ -1,13 +1,13 @@
 <?php declare(strict_types=1);
 
-namespace App\GraphQL\Mutations;
+namespace App\GraphQL\Mutations\Households;
 
 use App\Enums\HouseholdRelationship;
 use App\Models\Household;
 use App\Support\HouseholdResidentGuard;
 use Illuminate\Support\Facades\DB;
 
-final readonly class HouseholdCreate
+final readonly class Create
 {
     /** @param  array{}  $args */
     public function __invoke(null $_, array $args): Household
@@ -22,18 +22,15 @@ final readonly class HouseholdCreate
 
 		    $household = new Household();
 		    $household->code        = $args['code'] ?? null;
-		    $household->resident_id = $args['resident_id']; // chủ hộ
+		    $household->resident_id = $args['resident_id'];
 		    $household->address     = $args['address'];
 		    $household->save();
 
-		    // Gán chủ hộ vào household_residents với relationship HEAD
 		    $members = [
 			    $args['resident_id'] => ['relationship' => HouseholdRelationship::HEAD]
 		    ];
 
-		    // Gán thêm các thành viên khác nếu có
 		    foreach ($args['members'] ?? [] as $member) {
-			    // Bỏ qua nếu trùng chủ hộ
 			    if ($member['resident_id'] === $args['resident_id']) continue;
 
 			    $members[$member['resident_id']] = [
