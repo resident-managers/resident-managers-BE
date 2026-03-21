@@ -4,28 +4,19 @@ namespace Tests\Feature;
 
 use App\Models\Resident;
 use App\Models\Household;
-use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Nuwave\Lighthouse\Testing\MakesGraphQLRequests;
+use Tests\CreatesAuthenticatedUser;
 use Tests\TestCase;
 
 class StatisticsTest extends TestCase
 {
-    use MakesGraphQLRequests, RefreshDatabase;
-
-    private string $token;
+    use MakesGraphQLRequests, RefreshDatabase, CreatesAuthenticatedUser;
 
     protected function setUp(): void
     {
         parent::setUp();
-        $clientRepository = new \Laravel\Passport\ClientRepository();
-        $clientRepository->createPersonalAccessGrantClient('Test Client');
-        $this->token = User::factory()->create()->createToken('Test')->accessToken;
-    }
-
-    private function auth(): static
-    {
-        return $this->withHeaders(['Authorization' => 'Bearer ' . $this->token]);
+        $this->setUpAuthenticatedUser();
     }
 
     public function test_statistics_returns_correct_counts(): void

@@ -13,7 +13,8 @@
         "laravel/tinker": "^2.9",
         "mll-lab/graphql-php-scalars": "^6.4",
         "mll-lab/laravel-graphiql": "^4.0",
-        "nuwave/lighthouse": "^6.65"
+        "nuwave/lighthouse": "^6.65",
+        "spatie/laravel-permission": "^6.25"
     },
     "require-dev": {
         "fakerphp/faker": "^1.23",

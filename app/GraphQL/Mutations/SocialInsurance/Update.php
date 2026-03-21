@@ -1,22 +1,22 @@
 <?php declare(strict_types=1);
 
-namespace App\GraphQL\Mutations;
+namespace App\GraphQL\Mutations\SocialInsurance;
 
-use App\Models\TemporaryAbsence;
+use App\Models\SocialInsurance;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Validation\ValidationException;
 
-final readonly class TemporaryAbsenceUpdate
+final readonly class Update
 {
     /** @param array{} $args */
-    public function __invoke(null $_, array $args): TemporaryAbsence
+    public function __invoke(null $_, array $args): SocialInsurance
     {
         DB::beginTransaction();
         try {
-            $record = TemporaryAbsence::find($args['id']);
+            $record = SocialInsurance::find($args['id']);
             if (!$record) {
                 throw ValidationException::withMessages([
-                    'id' => ['Bản ghi tạm vắng không tồn tại.'],
+                    'id' => ['Thông tin bảo hiểm xã hội không tồn tại.'],
                 ]);
             }
 

@@ -1,12 +1,12 @@
 <?php declare(strict_types=1);
 
-namespace App\GraphQL\Mutations;
+namespace App\GraphQL\Mutations\Residents;
 
 use App\Models\Resident;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Validation\ValidationException;
 
-final readonly class ResidentUpdate
+final readonly class Update
 {
     /** @param  array{}  $args */
     public function __invoke(null $_, array $args)

@@ -1,13 +1,13 @@
 <?php declare(strict_types=1);
 
-namespace App\GraphQL\Mutations;
+namespace App\GraphQL\Mutations\TemporaryAbsence;
 
 use App\Models\Resident;
 use App\Models\TemporaryAbsence;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Validation\ValidationException;
 
-final readonly class TemporaryAbsenceCreate
+final readonly class Create
 {
     /** @param array{} $args */
     public function __invoke(null $_, array $args): TemporaryAbsence

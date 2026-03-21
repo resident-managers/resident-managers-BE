@@ -7,10 +7,13 @@ extend type Query @guard {
         where: _ @whereConditions(columnsEnum: "TemporaryAbsencesWhereColumn")
         orderBy: _ @orderBy(columnsEnum: "TemporaryAbsencesOrderByColumn")
     ): [TemporaryAbsence]
-    @paginate(defaultCount: 10)
+        @hasPermission(name: "view temporary absence")
+        @paginate(defaultCount: 10)
 
     "Chi tiết một đăng ký tạm vắng"
-    temporaryAbsence(id: ID! @eq): TemporaryAbsence @find
+    temporaryAbsence(id: ID! @eq): TemporaryAbsence
+        @hasPermission(name: "view temporary absence")
+        @find
 }
 ##########################
 ########## MUTATION
@@ -18,10 +21,16 @@ extend type Query @guard {
 extend type Mutation @guard {
     "Đăng ký tạm vắng"
     temporaryAbsenceCreate(input: TemporaryAbsenceCreateInput! @spread): TemporaryAbsence
+        @hasPermission(name: "create temporary absence")
+        @field(resolver: "App\\GraphQL\\Mutations\\TemporaryAbsence\\Create")
     "Cập nhật tạm vắng"
     temporaryAbsenceUpdate(input: TemporaryAbsenceUpdateInput! @spread): TemporaryAbsence
+        @hasPermission(name: "update temporary absence")
+        @field(resolver: "App\\GraphQL\\Mutations\\TemporaryAbsence\\Update")
     "Xóa đăng ký tạm vắng"
-    temporaryAbsenceDelete(id: ID! @whereKey): TemporaryAbsence @delete
+    temporaryAbsenceDelete(id: ID! @whereKey): TemporaryAbsence
+        @hasPermission(name: "delete temporary absence")
+        @delete
 }
 ##########################
 ########## INPUT

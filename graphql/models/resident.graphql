@@ -9,10 +9,13 @@ extend type Query @guard {
         where: _ @whereConditions(columnsEnum: "ResidentsWhereColumn")
         orderBy: _ @orderBy(columnsEnum: "ResidentsOrderByColumn")
     ): [Resident]
-    @paginate(defaultCount: 10)
+        @hasPermission(name: "view residents")
+        @paginate(defaultCount: 10)
 
     "Chi tiết một dân cư"
-    resident(id: ID! @eq): Resident @find
+    resident(id: ID! @eq): Resident
+        @hasPermission(name: "view residents")
+        @find
 }
 #######################
 ##########MUTATION
@@ -20,10 +23,16 @@ extend type Query @guard {
 extend type Mutation @guard {
     "Create a new resident"
     residentCreate(input: ResidentCreateInput! @spread): Resident
+        @hasPermission(name: "create residents")
+        @field(resolver: "App\\GraphQL\\Mutations\\Residents\\Create")
     "Update resident information"
     residentUpdate(id: ID!, input: ResidentUpdateInput! @spread): Resident
+        @hasPermission(name: "update residents")
+        @field(resolver: "App\\GraphQL\\Mutations\\Residents\\Update")
     "Delete a resident"
-    residentDelete(id: ID! @whereKey): Resident @delete
+    residentDelete(id: ID! @whereKey): Resident
+        @hasPermission(name: "delete residents")
+        @delete
 }
 
 #######################
