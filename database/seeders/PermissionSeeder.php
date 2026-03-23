@@ -5,8 +5,6 @@ namespace Database\Seeders;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Schema;
-use Spatie\Permission\Models\Permission;
-use Spatie\Permission\Models\Role;
 use Spatie\Permission\PermissionRegistrar;
 
 class PermissionSeeder extends Seeder
@@ -67,6 +65,9 @@ class PermissionSeeder extends Seeder
         [124, 'admin', 'delete temporary absence'],
         [125, 'admin', 'view statistics'],
         [126, 'admin', 'create users'],
+        [127, 'admin', 'view users'],
+        [128, 'admin', 'update users'],
+        [129, 'admin', 'delete users'],
     ];
 
     // [id, guard, name]
@@ -83,23 +84,33 @@ class PermissionSeeder extends Seeder
         DB::table('role_has_permissions')->truncate();
         DB::table('model_has_roles')->truncate();
         DB::table('model_has_permissions')->truncate();
-        Role::truncate();
-        Permission::truncate();
+        DB::table('roles')->truncate();
+        DB::table('permissions')->truncate();
         Schema::enableForeignKeyConstraints();
 
-        foreach (self::PERMISSIONS as [$id, $guard, $name]) {
-            Permission::create(['id' => $id, 'name' => $name, 'guard_name' => $guard]);
-        }
+        $now = now();
 
-        $userRole  = Role::create(['id' => 1, 'name' => 'user',  'guard_name' => 'api']);
-        $adminRole = Role::create(['id' => 2, 'name' => 'admin', 'guard_name' => 'admin']);
+        DB::table('permissions')->insert(array_map(
+            fn ($p) => ['id' => $p[0], 'guard_name' => $p[1], 'name' => $p[2], 'created_at' => $now, 'updated_at' => $now],
+            self::PERMISSIONS,
+        ));
 
-        $userRole->syncPermissions(
-            Permission::query()->where('guard_name', 'api')->pluck('name')->all()
+        DB::table('roles')->insert([
+            ['id' => 1, 'name' => 'user',  'guard_name' => 'api',   'created_at' => $now, 'updated_at' => $now],
+            ['id' => 2, 'name' => 'admin', 'guard_name' => 'admin', 'created_at' => $now, 'updated_at' => $now],
+        ]);
+
+        $userPermIds  = DB::table('permissions')->where('guard_name', 'api')->pluck('id');
+        $adminPermIds = DB::table('permissions')->where('guard_name', 'admin')->pluck('id');
+
+        DB::table('role_has_permissions')->insert(
+            $userPermIds->map(fn ($pid) => ['permission_id' => $pid, 'role_id' => 1])->all()
         );
 
-        $adminRole->syncPermissions(
-            Permission::query()->where('guard_name', 'admin')->pluck('name')->all()
+        DB::table('role_has_permissions')->insert(
+            $adminPermIds->map(fn ($pid) => ['permission_id' => $pid, 'role_id' => 2])->all()
         );
+
+        app(PermissionRegistrar::class)->forgetCachedPermissions();
     }
 }

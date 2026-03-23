@@ -1,14 +1,66 @@
-extend type Mutation @guard(with: ["admin"]) {
-    "Tạo tài khoản người dùng mới (chỉ admin)"
-    userCreate(input: UserCreateInput! @spread): User!
-    @hasPermission(name: "create users")
-    @field(resolver: "App\\GraphQL\\Mutations\\Users\\Create")
-}
+##########################
+########## QUERY
+##########################
+extend type Query @guard(with: ["admin"]) {
+    "Danh sách người dùng"
+    users(
+        where: _ @whereConditions(columnsEnum: "UsersWhereColumn")
+        orderBy: _ @orderBy(columnsEnum: "UsersOrderByColumn")
+    ): [User]
+        @hasPermission(name: "view users")
+        @paginate(defaultCount: 10)
 
+    "Chi tiết người dùng"
+    user(id: ID! @eq): User
+        @hasPermission(name: "view users")
+        @find
+}
+##########################
+########## MUTATION
+##########################
+extend type Mutation @guard(with: ["admin"]) {
+    "Tạo tài khoản người dùng mới"
+    userCreate(input: UserCreateInput! @spread): User!
+        @hasPermission(name: "create users")
+        @field(resolver: "App\\GraphQL\\Mutations\\Users\\Create")
+
+    "Cập nhật tài khoản người dùng"
+    userUpdate(input: UserUpdateInput! @spread): User!
+        @hasPermission(name: "update users")
+        @field(resolver: "App\\GraphQL\\Mutations\\Users\\Update")
+
+    "Xóa tài khoản người dùng"
+    userDelete(id: ID! @whereKey): User
+        @hasPermission(name: "delete users")
+        @delete
+}
+##########################
+########## INPUT
+##########################
 input UserCreateInput @validator(class: "UserCreateInputValidator") {
     name: String!
     email: String!
-    password: String!
-    password_confirmation: String!
     role: String
+}
+
+input UserUpdateInput @validator(class: "UserUpdateInputValidator") {
+    id: ID!
+    name: String
+    email: String
+    password: String
+    password_confirmation: String
+    role: String
+}
+##########################
+########## ENUM
+##########################
+enum UsersWhereColumn {
+    EMAIL @enum(value: "email")
+    NAME  @enum(value: "name")
+}
+
+enum UsersOrderByColumn {
+    NAME       @enum(value: "name")
+    EMAIL      @enum(value: "email")
+    CREATED_AT @enum(value: "created_at")
 }

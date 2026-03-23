@@ -2,15 +2,15 @@
 
 namespace App\GraphQL\Mutations\Auth;
 
-use Illuminate\Support\Facades\Auth;
+use Nuwave\Lighthouse\Support\Contracts\GraphQLContext;
 
 final readonly class Logout
 {
-    /** @param  array{}  $args */
-    public function __invoke(null $_, array $args)
+    /** @param array{} $args */
+    public function __invoke(null $_, array $args, GraphQLContext $context): bool
     {
-        Auth::user()->token()->revoke();
+        $context->user()->token()->revoke();
 
-		return true;
+        return true;
     }
 }
